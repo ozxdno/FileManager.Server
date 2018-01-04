@@ -18,6 +18,10 @@ public class UserModel {
 	 */
 	private String password;
 	/*
+	 * ip addresses
+	 */
+	private String ipv4;
+	/*
 	 * -1 - this user does not exist.
 	 * 00 - cannot do anything refer to remote resource.
 	 */

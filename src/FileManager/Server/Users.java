@@ -17,7 +17,7 @@ public class Users {
 	}
 	public UserModel getUser(String loginName, String password) {
 		if(loginName == null || loginName.length() == 0) {
-			Server.setErrorCode(0);
+			ErrorCode.setError(0);
 			return null;
 		}
 		if(password == null || password.length() == 0) {
