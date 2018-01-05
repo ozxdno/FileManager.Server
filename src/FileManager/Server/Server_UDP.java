@@ -7,7 +7,8 @@ import java.util.*;
 public class Server_UDP {
 	private static int port = 65535;
 	private static UDP_Server server;
-	private static Set<UDP_Client> clients;
+	private static Set<UDP_Client> clients = new HashSet<UDP_Client>();
+	private static long permitIdle;
 	
 	public static int getPort() {
 		return port;
@@ -15,12 +16,23 @@ public class Server_UDP {
 	public static Set<UDP_Client> getClients(){
 		return clients;
 	}
+	public static long getPermitIdle() {
+		return permitIdle;
+	}
 	
 	public static boolean setPort(int port) {
 		if(port < 1000) {
 			return false;
 		}
 		Server_UDP.port = port;
+		return true;
+	}
+	public static boolean setPermitIdle(long permitIdle) {
+		if(permitIdle < 1000) {
+			return false;
+		}
+		
+		Server_UDP.permitIdle = permitIdle;
 		return true;
 	}
 	
@@ -31,6 +43,7 @@ public class Server_UDP {
 			clients = new HashSet<UDP_Client>();
 		}
 		clients.clear();
+		permitIdle = 10 * 1000;
 	}
 	
 	public static boolean restart(int port) {
@@ -65,6 +78,24 @@ public class Server_UDP {
 		}
 		
 		return null;
+	}
+	public static void closeIdle(){
+		Iterator<UDP_Client> it = clients.iterator();
+		while(it.hasNext()) {
+			UDP_Client c = (UDP_Client)it.next();
+			if(System.currentTimeMillis() - c.getLastAccessTime() > permitIdle) {
+				c.stop();
+				it.remove();
+			}
+		}
+	}
+	public static void closeAll() {
+		Iterator<UDP_Client> it = clients.iterator();
+		while(it.hasNext()) {
+			UDP_Client c = (UDP_Client)it.next();
+			c.stop();
+			it.remove();
+		}
 	}
 }
 
@@ -110,16 +141,26 @@ class UDP_Server extends Thread {
 				if(recestr.equals("apply for new port")) {
 					DatagramSocket newServer = seekNewServer();
 					if(newServer == null) {
-						send("too many users, please try again later!", ipv4, port);
+						send("ports not enough, please try again later !", ipv4, port);
 					} else {
 						client = new UDP_Client(newServer);
 						Server_UDP.addClient(client);
 						client.start();
 						send("new port = " + String.valueOf(client.getPort()), ipv4, port);
 					}
-				} else {
-					send("wrong command!", ipv4, port);
+					continue;
 				}
+				if(recestr.equals("close idle")) {
+					Server_UDP.closeIdle();
+					send("closed !", ipv4, port);
+					continue;
+				}
+				if(recestr.equals("close server")) {
+					send("closed !", ipv4, port);
+					Server_UDP.closeAll();
+					break;
+				}
+				send("wrong command !", ipv4, port);
 				
 			}catch(Exception e) {
 				;
@@ -196,11 +237,11 @@ class UDP_Server extends Thread {
 			}
 		}
 		if(idx1 != -1 && idx2 == -1) {
-			recestr = recestr.substring(0, idx1-1);
+			recestr = recestr.substring(0, idx1);
 			return;
 		}
 		if(idx1 == -1 && idx2 != -1) {
-			recestr = recestr.substring(0, idx2-1);
+			recestr = recestr.substring(0, idx2);
 			return;
 		}
 	}
@@ -219,18 +260,16 @@ class UDP_Client {
 	private String sendstr;
 	private UserModel user;
 	private processor pro;
+	private long lastAccessTime;
 	
 	public int getPort() {
-		try {
-			port = server.getPort();
-		} catch(Exception e) {
-			;
-		}
-		
 		return port;
 	}
 	public UserModel getUser() {
 		return user;
+	}
+	public long getLastAccessTime() {
+		return lastAccessTime;
 	}
 	
 	public boolean setPort(int port) {
@@ -244,28 +283,29 @@ class UDP_Client {
 		this.server = server;
 		return true;
 	}
+	
 	public UDP_Client(DatagramSocket server) {
 		stop();
 		clear();
 		setServer(server);
-		getPort();
+		setPort(server.getLocalPort());
 	}
 	
 	public void clear() {
 		port = 0;
 		server = null;
-		rece = null;
+		recebyte = new byte[1024];
+		rece = new DatagramPacket(recebyte, recebyte.length);
 		send = null;
 		abort = false;
 		running = false;
-		recebyte = null;
 		sendbyte = null;
-		recestr = null;
+		recestr = "";
 		sendstr = null;
 		user = null;
+		lastAccessTime = System.currentTimeMillis();
 	}
 	public boolean start() {
-		stop();
 		pro = new processor(this);
 		pro.start();
 		return true;
@@ -275,8 +315,19 @@ class UDP_Client {
 			pro.myAbort();
 		}
 	}
-	public boolean send(String str) {
-		return true;
+	public boolean send(String str, InetAddress ip, int port) {
+		if(server == null) {
+			return false;
+		}
+		sendstr = str;
+		sendbyte = sendstr.getBytes();
+		send = new DatagramPacket(sendbyte, sendbyte.length, ip, port);
+		try {
+			server.send(send);
+			return true;
+		}catch(Exception e) {
+			return false;
+		}
 	}
 	
 	private class processor extends Thread {
@@ -292,15 +343,23 @@ class UDP_Client {
 			running = true;
 			if(server == null) {
 				running = false;
+				Server_UDP.removeClient(parent);
+				return;
+			}
+			if(port < 1000) {
+				running = false;
+				Server_UDP.removeClient(parent);
 				return;
 			}
 			while(!abort) {
 				try {
 					server.receive(rece);
+					lastAccessTime = System.currentTimeMillis();
 					InetAddress ipv4 = rece.getAddress();
 					int port = rece.getPort();
 					receive();
 					
+					send("wrong command !", ipv4, port);
 				}catch(Exception e) {
 					;
 				}
@@ -309,8 +368,18 @@ class UDP_Client {
 			Server_UDP.removeClient(parent);
 		}
 		public void myAbort() {
+			try {
+				server.close();
+			} catch(Exception e) {
+				;
+			}
 			while(running) {
 				abort = true;
+			}
+			try {
+				server.close();
+			} catch(Exception e) {
+				;
 			}
 		}
 		public boolean isRunning() {
@@ -335,11 +404,11 @@ class UDP_Client {
 				}
 			}
 			if(idx1 != -1 && idx2 == -1) {
-				recestr = recestr.substring(0, idx1-1);
+				recestr = recestr.substring(0, idx1);
 				return;
 			}
 			if(idx1 == -1 && idx2 != -1) {
-				recestr = recestr.substring(0, idx2-1);
+				recestr = recestr.substring(0, idx2);
 				return;
 			}
 		}
