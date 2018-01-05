@@ -15,6 +15,8 @@ public class Form {
 		
 		//Server server = new Server(60000);
 		//server.restart();
+		
+		Server_UDP.restart(0);
 	}
 
 }

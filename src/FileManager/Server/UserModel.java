@@ -22,6 +22,10 @@ public class UserModel {
 	 */
 	private String ipv4;
 	/*
+	 * port
+	 */
+	private int port;
+	/*
 	 * -1 - this user does not exist.
 	 * 00 - cannot do anything refer to remote resource.
 	 */
@@ -124,6 +128,9 @@ public class UserModel {
 		money = 0.0;
 	}
 	public int register() {
+		return -1;
+	}
+	public int delete() {
 		return -1;
 	}
 	

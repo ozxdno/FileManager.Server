@@ -5,7 +5,7 @@ import java.io.*;
 import java.util.*;
 
 public class Server_TCP {
-	private static int port;
+	private static int port = 60000;
 	private static Accept accept;
 	private static Set<Client> clients = new HashSet<Client>();
 
@@ -24,22 +24,19 @@ public class Server_TCP {
 		return true;
 	}
 	
-	public Server_TCP(int port) {
-		clear();
-		setPort(port);
-	}
-	
 	public static void clear() {
-		Server_TCP.port = 0;
+		Server_TCP.port = 60000;
 		accept = null;
 		if(clients == null) {
 			clients = new HashSet<Client>();
 		}
 	}
-	public static boolean restart() {
+	public static boolean restart(int port) {
 		stop();
+		clear();
+		setPort(port);
 		try {
-			accept = new Accept(new ServerSocket(port));
+			accept = new Accept(new ServerSocket(Server_TCP.port));
 			accept.start();
 			return true;
 		}catch(Exception e) {
