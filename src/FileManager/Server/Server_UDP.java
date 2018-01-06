@@ -46,6 +46,9 @@ public class Server_UDP {
 		permitIdle = 10 * 1000;
 	}
 	
+	public static boolean start(int port) {
+		return restart(port);
+	}
 	public static boolean restart(int port) {
 		stop();
 		clear();

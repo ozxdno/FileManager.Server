@@ -31,6 +31,9 @@ public class Server_TCP {
 			clients = new HashSet<Client>();
 		}
 	}
+	public static boolean start(int port) {
+		return restart(port);
+	}
 	public static boolean restart(int port) {
 		stop();
 		clear();
