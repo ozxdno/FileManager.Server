@@ -62,7 +62,7 @@ public class ConfigModel {
 			return;
 		}
 		int cut0 = 0;
-		while(items.charAt(cut0) != '\r' && items.charAt(cut0) != '\n') {
+		while(cut0 < items.length() && items.charAt(cut0) != '\r' && items.charAt(cut0) != '\n') {
 			cut0++;
 		}
 		items = items.substring(0, cut0);
@@ -70,6 +70,7 @@ public class ConfigModel {
 		if(idx < 0) {
 			field = "";
 			value = items;
+			return;
 		}
 		int cut1 = idx-1;
 		int cut2 = idx+1;

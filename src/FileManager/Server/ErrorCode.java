@@ -28,12 +28,6 @@ public final class ErrorCode {
 	private static Map<Integer,String> message = new HashMap<Integer,String>();
 	private static int code;
 	
-	static {
-		message.put(0x010101, "Server.Windows.Java.Command : Wrong Command");
-		message.put(0x010102, "Server.Windows.Java.Command : Login Name is Empty");
-		message.put(0x010103, "Server.Windows.Java.Command : Password is Empty");
-	}
-	
 	public static int getError() {
 		int code = ErrorCode.code;
 		ErrorCode.code = 0;
@@ -58,5 +52,9 @@ public final class ErrorCode {
 		}
 		ErrorCode.message.put(code, message);
 		return true;
+	}
+	
+	public static String getString() {
+		return String.format("%08x", code);
 	}
 }

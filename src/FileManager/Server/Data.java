@@ -6,4 +6,5 @@ public final class Data {
 	public final static Supports supports = new Supports();
 	public final static Users users = new Users();
 	public final static Config config = new Config();
+	public final static Invitations invitations = new Invitations();
 }

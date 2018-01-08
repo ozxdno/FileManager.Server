@@ -4,7 +4,7 @@ package FileManager.Server;
  * 
  * @author ozxdno
  *
- * 00 - register : register = LOGIN_NAME | PASSWORD | NICK_NAME | EMAIL | PHONE
+ * 00 - register : register = LOGIN_NAME | PASSWORD | NICK_NAME | EMAIL | PHONE | INVITATION
  *                 register = ERROR_CODE | USERMODEL
  *                 
  * 01 - login : login = LOGIN_NAME | PASSWORD
@@ -53,16 +53,26 @@ package FileManager.Server;
  * 07 - forgot : forgot = LOGIN_NAME | PASSWORD | NICK_NAME | EMAIL | PHONE
  *               forgot = ERRORCODE | PARTID | LOGIN_NAME | PASSWORD | NICK_NAME | EMAIL | PHONE
  * 
+ * 08 - invitation : invitation = USER | INVITATION
+ *                   invitation = ERROR_CODE
+ * 
  */
 public class Command {
 	public static final String deal(ConfigModel config) {
-		if(config.getValue().equals("login")) {
+		if(config.getField().equals("login")) {
 			return login(config);
 		}
 		
 		return "wrong command = 0x010101";
 	}
 	
+	private static final String register(ConfigModel config) {
+		if(config.getItemsSize() == 6) {
+			return "register = 0x";
+		}
+		
+		return "";
+	}
 	private static final String login(ConfigModel config) {
 		if(config.getItemsSize() != 2) {
 			return "login = 0x010106";
