@@ -13,13 +13,11 @@ public class Form {
 		//SQL.updata("insert into " + SQL.table_config + " values(\"test\",\"1\")");
 		//SQL.disconnect();
 		
-		//Server server = new Server(60000);
-		//server.restart();
-		
+		Server_TCP.start(0);
 		
 		//Server_UDP.restart(0);
 		
-		Client_TCP.start();
+		//Client_TCP.start();
 	}
 
 }

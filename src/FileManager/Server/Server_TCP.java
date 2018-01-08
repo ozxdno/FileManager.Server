@@ -5,7 +5,9 @@ import java.io.*;
 import java.util.*;
 
 public class Server_TCP {
-	private static int port = 60000;
+	private final static int maxport = 65535;
+	private final static int minport = 10000;
+	private static int port = maxport;
 	private static Accept accept;
 	private static Set<Client> clients = new HashSet<Client>();
 
@@ -25,7 +27,7 @@ public class Server_TCP {
 	}
 	
 	public static void clear() {
-		Server_TCP.port = 60000;
+		Server_TCP.port = maxport;
 		accept = null;
 		if(clients == null) {
 			clients = new HashSet<Client>();

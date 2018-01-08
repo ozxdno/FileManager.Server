@@ -1,0 +1,9 @@
+
+0x000000 Normal
+0x010101 Server.Windows.Java.Command : Wrong Command
+0x010102 Server.Windows.Java.Command : Login Name is Empty
+0x010103 Server.Windows.Java.Command : Password is Empty
+0x010104 Server.Windows.Java.Command : Login Name not exists
+0x010105 Server.Windows.Java.Command : Password is Wrong
+0x010106 Server.Windows.Java.Command : Login Command is Wrong
+

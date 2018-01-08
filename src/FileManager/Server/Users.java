@@ -37,16 +37,19 @@ public class Users {
 		
 		return user;
 	}
-	public ArrayList<UserModel> getUsers(String loginName, String password){
+	public ArrayList<UserModel> getUsers(){
 		ArrayList<UserModel> users = new ArrayList<UserModel>();
-		UserModel user = getUser(loginName, password);
-		if(user == null || user.getPriority() < 5) {
-			return users;
-		}
-		
 		for(UserModel u : users) {
 			users.add(u);
 		}
 		return users;
+	}
+	
+	public boolean exists(String loginName) {
+		if(loginName == null || loginName.length() == 0) {
+			return false;
+		}
+		
+		return users.get(loginName) != null;
 	}
 }

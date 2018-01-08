@@ -5,19 +5,19 @@ package FileManager.Server;
  * @author ozxdno
  *
  * 00 - register : register = LOGIN_NAME | PASSWORD | NICK_NAME | EMAIL | PHONE
- *                 register = ERROR_CODE
+ *                 register = ERROR_CODE | USERMODEL
  *                 
  * 01 - login : login = LOGIN_NAME | PASSWORD
- *              login = ERROR_CODE
+ *              login = ERROR_CODE | USERMODEL
  *              
- * 02 - broswer : broswer = USER | BROSWER_ARGS
+ * 02 - browser : browser = USER | BROSWER_ARGS
  *                                 all folders
  *                                 folders
  *                                 files | FOLDER
  *                                 current
  *                                 users
  *                          USER = USERINFO - PARTID : id=ozxdno=password-partid
- *                broswer = ERROR_CODE | PARTID | CONTENTS
+ *                browser = ERROR_CODE | PARTID | CONTENTS
  *                                               <ISROOT|URL>
  *                                               <ISROOT|URL>
  *                                               <URL>
@@ -64,6 +64,9 @@ public class Command {
 	}
 	
 	private static final String login(ConfigModel config) {
+		if(config.getItemsSize() != 2) {
+			return "login = 0x010106";
+		}
 		String loginName = config.getString(0);
 		if(loginName == null || loginName.length() == 0) {
 			return "login = 0x010102";
@@ -72,7 +75,14 @@ public class Command {
 		if(password == null || password.length() == 0) {
 			return "login = 0x010103";
 		}
+		if(!Data.users.exists(loginName)) {
+			return "login = 0x010104";
+		}
+		UserModel user = Data.users.getUser(loginName, password);
+		if(user == null) {
+			return "login = 0x010105";
+		}
 		
-		return "login = 0x000000";
+		return "login = 0x000000|" + user.toString();
 	}
 }

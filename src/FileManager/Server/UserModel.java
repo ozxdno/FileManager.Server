@@ -17,14 +17,8 @@ public class UserModel {
 	 * pw
 	 */
 	private String password;
-	/*
-	 * ip addresses
-	 */
-	private String ipv4;
-	/*
-	 * port
-	 */
-	private int port;
+	private String email;
+	private String phone;
 	/*
 	 * -1 - this user does not exist.
 	 * 00 - cannot do anything refer to remote resource.
@@ -132,6 +126,18 @@ public class UserModel {
 	}
 	public int delete() {
 		return -1;
+	}
+	
+	public String toString() {
+		String str = "";
+		str += String.valueOf(index) + "|";
+		str += loginName + "|";
+		str += nickName + "|";
+		str += password + "|";
+		str += email + "|";
+		str += phone + "|";
+		
+		return str;
 	}
 	
 	protected void init(String loginName, String password) {

@@ -18,6 +18,9 @@ public class ConfigModel {
 	public boolean getIsOK() {
 		return ok;
 	}
+	public int getItemsSize() {
+		return items.length;
+	}
 	
 	public boolean setField(String field) {
 		if(field == null) {
