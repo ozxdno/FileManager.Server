@@ -3,6 +3,7 @@ package FileManager.Server;
 public class ConfigModel {
 	private String field;
 	private String value;
+	private String[] items;
 	private boolean ok; 
 	
 	public String getField() {
@@ -10,6 +11,9 @@ public class ConfigModel {
 	}
 	public String getValue() {
 		return value;
+	}
+	public String[] getItems() {
+		return items;
 	}
 	public boolean getIsOK() {
 		return ok;
@@ -27,47 +31,69 @@ public class ConfigModel {
 			return false;
 		}
 		this.value = value;
+		items = value.split("\\|");
+		return true;
+	}
+	public boolean setItems(String[] items) {
+		if(items == null) {
+			return false;
+		}
+		this.items = items;
+		value = "";
+		if(items.length == 0) {
+			return true;
+		}
+		for(int i=0; i<items.length; i++) {
+			value += items[i] + "|";
+		}
+		value = value.substring(0, value.length());
 		return true;
 	}
 	
 	public ConfigModel() {
 		clear();
 	}
-	public ConfigModel(String item) {
+	public ConfigModel(String items) {
 		clear();
-		if(item == null || item.length() == 0) {
+		if(items == null || items.length() == 0) {
 			return;
 		}
 		int cut0 = 0;
-		while(item.charAt(cut0) != '\r' && item.charAt(cut0) != '\n') {
+		while(items.charAt(cut0) != '\r' && items.charAt(cut0) != '\n') {
 			cut0++;
 		}
-		item = item.substring(0, cut0);
-		int idx = item.indexOf('=');
+		items = items.substring(0, cut0);
+		int idx = items.indexOf('=');
 		if(idx < 0) {
 			field = "";
-			value = item;
+			value = items;
 		}
 		int cut1 = idx-1;
 		int cut2 = idx+1;
-		while(cut1 >= 0 && item.charAt(cut1) == ' ') {
+		while(cut1 >= 0 && items.charAt(cut1) == ' ') {
 			cut1--;
 		}
-		while(cut2 < item.length() && item.charAt(cut2) == ' ') {
+		while(cut2 < items.length() && items.charAt(cut2) == ' ') {
 			cut2++;
 		}
-		field = item.substring(0, cut1+1);
-		value = item.substring(cut2);
+		setField(items.substring(0, cut1+1));
+		setValue(items.substring(cut2));
 	}
 	public ConfigModel(String field, String value) {
 		clear();
 		setField(field);
 		setValue(value);
 	}
+	public ConfigModel(String field, String[] items) {
+		clear();
+		setField(field);
+		setItems(items);
+	}
 	
 	public void clear() {
 		field = "";
 		value = "";
+		items = null;
 		ok = true;
 	}
 	
@@ -107,8 +133,56 @@ public class ConfigModel {
 			return 0;
 		}
 	}
+	public String getString() {
+		ok = true;
+		return value;
+	}
+	public boolean getBoolean(int item) {
+		try {
+			ok = true;
+			return Double.parseDouble(items[item]) != 0;
+		} catch(Exception e) {
+			ok = false;
+			return false;
+		}
+	}
+	public int getInt(int item) {
+		try {
+			ok = true;
+			return Integer.parseInt(items[item]);
+		} catch(Exception e) {
+			ok = false;
+			return 0;
+		}
+	}
+	public long getLong(int item) {
+		try {
+			ok = true;
+			return Long.parseLong(items[item]);
+		} catch(Exception e) {
+			ok = false;
+			return 0;
+		}
+	}
+	public double getDouble(int item) {
+		try {
+			ok = true;
+			return Double.parseDouble(items[item]);
+		} catch(Exception e) {
+			ok = false;
+			return 0;
+		}
+	}
+	public String getString(int item) {
+		try {
+			ok = true;
+			return items[item];
+		} catch(Exception e) {
+			ok = false;
+			return null;
+		}
+	}
 	public boolean[] getBooleanList() {
-		String[] items = value.split("\\|");
 		boolean[] list = new boolean[items.length];
 		try {
 			ok = true;
@@ -122,7 +196,6 @@ public class ConfigModel {
 		}
 	}
 	public int[] getIntList() {
-		String[] items = value.split("\\|");
 		int[] list = new int[items.length];
 		try {
 			ok = true;
@@ -136,7 +209,6 @@ public class ConfigModel {
 		}
 	}
 	public long[] getLongList() {
-		String[] items = value.split("\\|");
 		long[] list = new long[items.length];
 		try {
 			ok = true;
@@ -150,7 +222,6 @@ public class ConfigModel {
 		}
 	}
 	public double[] getDoubleList() {
-		String[] items = value.split("\\|");
 		double[] list = new double[items.length];
 		try {
 			ok = true;

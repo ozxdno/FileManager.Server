@@ -115,6 +115,7 @@ class Client extends Thread {
 	private String accept;
 	private PrintWriter pw;
 	private String send = "123";
+	private ConfigModel config;
 	
 	public Client(Socket client) {
 		this.client = client;
@@ -139,6 +140,8 @@ class Client extends Thread {
 		while(!abort && !client.isClosed() && accept != null) {
 			try {
 				accept = br.readLine();
+				config = new ConfigModel(accept);
+				send = Command.deal(config);
 				pw.println(send);
                 pw.flush();
 			}catch(Exception e) {
