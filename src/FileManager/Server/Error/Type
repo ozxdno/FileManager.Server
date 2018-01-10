@@ -1,0 +1,17 @@
+
+000000000 Normal
+000000001 Wrong Command
+000000002 Wrong Register Command
+000000003 Empty Register Login Name
+000000004 Empty Register Password
+000000005 Empty Register Nick Name
+000000006 Empty Register Email
+000000007 Empty Register Phone
+000000008 Empty Register Invitation
+000000009 Register Existed Login Name
+000000010 Register with Invalid Invitation
+000000011 Wrong Login Command
+000000012 Empty Login Name
+000000013 Empty Login Password
+000000014 Wrong Login Name
+000000015 Wrong Login Password
