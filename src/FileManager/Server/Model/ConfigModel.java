@@ -1,5 +1,7 @@
 package FileManager.Server.Model;
 
+import FileManager.Server.Global.*;
+
 public class ConfigModel {
 	private String field;
 	private String value;
@@ -56,32 +58,28 @@ public class ConfigModel {
 	public ConfigModel() {
 		clear();
 	}
-	public ConfigModel(String items) {
+	public ConfigModel(String line) {
 		clear();
-		if(items == null || items.length() == 0) {
+		if(line == null || line.length() == 0) {
 			return;
 		}
-		int cut0 = 0;
-		while(cut0 < items.length() && items.charAt(cut0) != '\r' && items.charAt(cut0) != '\n') {
-			cut0++;
-		}
-		items = items.substring(0, cut0);
-		int idx = items.indexOf('=');
+		line = Global.FixURL.fixLine(line);
+		int idx = line.indexOf('=');
 		if(idx < 0) {
 			field = "";
-			value = items;
+			value = line;
 			return;
 		}
 		int cut1 = idx-1;
 		int cut2 = idx+1;
-		while(cut1 >= 0 && items.charAt(cut1) == ' ') {
+		while(cut1 >= 0 && line.charAt(cut1) == ' ') {
 			cut1--;
 		}
-		while(cut2 < items.length() && items.charAt(cut2) == ' ') {
+		while(cut2 < line.length() && line.charAt(cut2) == ' ') {
 			cut2++;
 		}
-		setField(items.substring(0, cut1+1));
-		setValue(items.substring(cut2));
+		setField(line.substring(0, cut1+1));
+		setValue(line.substring(cut2));
 	}
 	public ConfigModel(String field, String value) {
 		clear();

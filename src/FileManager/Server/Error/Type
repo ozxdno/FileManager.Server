@@ -1,17 +1,30 @@
 
-000000000 Normal
-000000001 Wrong Command
-000000002 Wrong Register Command
-000000003 Empty Register Login Name
-000000004 Empty Register Password
-000000005 Empty Register Nick Name
-000000006 Empty Register Email
-000000007 Empty Register Phone
-000000008 Empty Register Invitation
-000000009 Register Existed Login Name
-000000010 Register with Invalid Invitation
-000000011 Wrong Login Command
-000000012 Empty Login Name
-000000013 Empty Login Password
-000000014 Wrong Login Name
-000000015 Wrong Login Password
+0 = Normal
+1 = Wrong Command
+2 = Wrong Register Command
+3 = Empty Register Login Name
+4 = Empty Register Password
+5 = Empty Register Nick Name
+6 = Empty Register Email
+7 = Empty Register Phone
+8 = Empty Register Invitation
+9 = Register Existed Login Name
+10 = Register with Invalid Invitation
+11 = Wrong Login Command
+12 = Empty Login Name
+13 = Empty Login Password
+14 = Wrong Login Name
+15 = Wrong Login Password
+16 = DataBase Service is Closed / DataBase not Exist
+17 = Cannot Create MySQL Query Object
+18 = Close DataBase Connection Failed, Cannot Close MySQL Query Object
+19 = Close DataBase Connection Failed, Cannot Close Connection to MySQL DataBase
+20 = File points by URL not Exist
+21 = File points by URL is not a File, is Folder
+22 = File points by URL is not a Folder, is File
+23 = Open File Failed
+24 = Close BufferedReader Failed
+25 = Parse Integer Failed
+26 = Query DataBase Failed
+27 = Updata DataBase Failed
+

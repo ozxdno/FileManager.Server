@@ -22,4 +22,5 @@ public class Global {
 	public final static Server_UDP Server_UDP = new Server_UDP();
 	
 	public final static FixURL FixURL = new FixURL();
+	public final static Time Time = new Time();
 }

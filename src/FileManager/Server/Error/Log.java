@@ -1,5 +1,7 @@
 package FileManager.Server.Error;
 
-public class Log {
+import FileManager.Server.Collection.*;
 
+public class Log  {
+	private Errors content;
 }

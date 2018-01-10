@@ -1,24 +1,51 @@
 package FileManager.Server.OperateDB;
 
 import java.sql.*;
+import FileManager.Server.Global.*;
 
 public class SQL {
-	public String loginName = "root";
-	public String password = "ani1357658uiu";
-	public String db_name = "filemanager";
-	public String ipv4 = "127.0.0.1";
-	public int port = 3306;
-	public String table_config = "config";
-	public String table_files = "files";
-	private Connection connection = null;
-	private Statement query = null;
+	private String loginName;
+	private String password;
+	private String db_name;
+	private String ipv4;
+	private int port;
+	private Connection connection;
+	private boolean connected;
+	private Statement query;
+	
+	public String getLoginName() {
+		return loginName;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public String getDB_Name() {
+		return db_name;
+	}
+	public String getIpv4() {
+		return ipv4;
+	}
+	public int getPort() {
+		return port;
+	}
+	public boolean isConnected() {
+		return connected &&
+			   connection != null &&
+			   query != null;
+	}
+	
+	public SQL() {
+		clear();
+	}
 	
 	public void clear() {
-		loginName = "";
-		password = "";
-		ipv4 = "";
-		port = -1;
+		loginName = "root";
+		password = "ani1357658uiu";
+		db_name = "filemanager";
+		ipv4 = "127.0.0.1";
+		port = 3306;
 		connection = null;
+		connected = false;
 		query = null;
 	}
 	public void connect() {
@@ -30,13 +57,13 @@ public class SQL {
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection(url, loginName, password);
 		}catch(Exception e) {
-			
+			Global.CurrentError.show(16);
 			return;
 		}
 		try {
 			query = connection.createStatement();
 		}catch(Exception e) {
-			
+			Global.CurrentError.show(17);
 			return;
 		}
 	}
@@ -45,7 +72,7 @@ public class SQL {
 			try {
 				query.close();
 			}catch(Exception e) {
-				;
+				Global.CurrentError.show(18);
 			}
 		}
 		
@@ -53,18 +80,16 @@ public class SQL {
 			try {
 				connection.close();
 			}catch(Exception e) {
-				;
+				Global.CurrentError.show(19);
 			}
 		}
 	}
 	
-	public void init() {
-		
-	}
 	public ResultSet query(String where) {
 		try {
 			return query.executeQuery(where);
 		}catch(Exception e) {
+			Global.CurrentError.show(26);
 			return null;
 		}
 	}
@@ -73,6 +98,7 @@ public class SQL {
 			query.executeUpdate(statement);
 			return true;
 		}catch(Exception e) {
+			Global.CurrentError.show(27);
 			return false;
 		}
 	}
