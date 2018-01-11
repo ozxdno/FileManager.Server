@@ -44,7 +44,7 @@ import FileManager.Server.Global.*;
  *                                      ERROR_CODE
  *                                      ERROR_CODE
  * 06 - synchro : synchro = USER | folders
- *                                 config
+ *                                 command
  *                                 files
  *                                 scores
  *                synchro = ERROR_CODE | PARTID | CONTENTS
@@ -59,29 +59,92 @@ import FileManager.Server.Global.*;
  * 08 - invitation : invitation = USER | INVITATION
  *                   invitation = ERROR_CODE
  * 
+ * 09 - close : close = USER | idle
+ *                             tcp
+ *                             udp
+ *                             self
+ *              close = ERROR_CODE
+ * 
  */
 public class Server_CMD {
-	public String deal(ConfigModel config) {
-		if(config.getField().equals("register")) {
-			return register(config);
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	private ConfigModel command;
+	private UserModel user;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public ConfigModel getCommand() {
+		return command;
+	}
+	public UserModel getUser() {
+		return user;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public boolean setCommand(ConfigModel command) {
+		if(command == null) {
+			return false;
 		}
-		if(config.getField().equals("login")) {
-			return login(config);
+		this.command = command;
+		return true;
+	}
+	public boolean setCommand(String command) {
+		return this.command.setLine(command);
+	}
+	public boolean setUser(UserModel user) {
+		if(user == null) {
+			return false;
+		}
+		this.user = user;
+		return true;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public Server_CMD() {
+		clear();
+	}
+	public Server_CMD(ConfigModel command, UserModel user) {
+		clear();
+		setCommand(command);
+		setUser(user);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public String deal() {
+		if(command.getField().equals("register")) {
+			return register();
+		}
+		if(command.getField().equals("login")) {
+			return login();
+		}
+		if(command.getField().equals("close")) {
+			return login();
 		}
 		
 		return "wrong command = 1";
 	}
+	public void clear() {
+		this.command = new ConfigModel();
+		this.user = null;
+	}
 	
-	private String register(ConfigModel config) {
-		if(config.getItemsSize() == 6) {
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	private String register() {
+		if(command.getItemsSize() != 6) {
 			return "register = 2";
 		}
-		String loginName = config.getString(0);
-		String password = config.getString(1);
-		String nickName = config.getString(2);
-		String email = config.getString(3);
-		String phone = config.getString(4);
-		String invitation = config.getString(5);
+		String loginName = command.getString(0);
+		String password = command.getString(1);
+		String nickName = command.getString(2);
+		String email = command.getString(3);
+		String phone = command.getString(4);
+		String invitation = command.getString(5);
 		if(loginName.length() == 0) {
 			return "register = 3";
 		}
@@ -116,31 +179,34 @@ public class Server_CMD {
 		user.setPhone(phone);
 		
 		if(!user.register()) {
-			return "register = " + Global.CurrentError.toString();
+			return "register = 39";
 		}
 		
 		return "register = 0|" + user.toString();
 	}
-	private String login(ConfigModel config) {
-		if(config.getItemsSize() != 2) {
+	private String login() {
+		if(command.getItemsSize() != 2) {
 			return "login = 11";
 		}
-		String loginName = config.getString(0);
+		String loginName = command.getString(0);
 		if(loginName == null || loginName.length() == 0) {
 			return "login = 12";
 		}
-		String password = config.getString(1);
+		String password = command.getString(1);
 		if(password == null || password.length() == 0) {
 			return "login = 13";
 		}
 		if(!Global.Users.exists(loginName)) {
 			return "login = 14";
 		}
-		UserModel user = Global.Users.getUser(loginName, password);
+		UserModel user = Global.Users.getUser(loginName);
 		if(user == null) {
 			return "login = 15";
 		}
 		
 		return "login = 0|" + user.toString();
+	}
+	private String close() {
+		return "";
 	}
 }

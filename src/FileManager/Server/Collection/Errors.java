@@ -16,4 +16,13 @@ public class Errors {
 		}
 		errors.clear();
 	}
+	public void addError(ErrorModel error) {
+		errors.add(error);
+	}
+	public boolean isEmpty() {
+		return errors.isEmpty();
+	}
+	public int size() {
+		return errors.size();
+	}
 }

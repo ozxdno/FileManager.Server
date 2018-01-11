@@ -3,10 +3,15 @@ package FileManager.Server.Model;
 import FileManager.Server.Global.*;
 
 public class ConfigModel {
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	private String field;
 	private String value;
 	private String[] items;
 	private boolean ok; 
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public String getField() {
 		return field;
@@ -24,6 +29,31 @@ public class ConfigModel {
 		return items.length;
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public boolean setLine(String line) {
+		if(line == null || line.length() == 0) {
+			return false;
+		}
+		line = Global.FixURL.fixLine(line);
+		int idx = line.indexOf('=');
+		if(idx < 0) {
+			field = "";
+			value = line;
+			return true;
+		}
+		int cut1 = idx-1;
+		int cut2 = idx+1;
+		while(cut1 >= 0 && line.charAt(cut1) == ' ') {
+			cut1--;
+		}
+		while(cut2 < line.length() && line.charAt(cut2) == ' ') {
+			cut2++;
+		}
+		setField(line.substring(0, cut1+1));
+		setValue(line.substring(cut2));
+		return true;
+	}
 	public boolean setField(String field) {
 		if(field == null) {
 			return false;
@@ -55,31 +85,14 @@ public class ConfigModel {
 		return true;
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public ConfigModel() {
 		clear();
 	}
 	public ConfigModel(String line) {
 		clear();
-		if(line == null || line.length() == 0) {
-			return;
-		}
-		line = Global.FixURL.fixLine(line);
-		int idx = line.indexOf('=');
-		if(idx < 0) {
-			field = "";
-			value = line;
-			return;
-		}
-		int cut1 = idx-1;
-		int cut2 = idx+1;
-		while(cut1 >= 0 && line.charAt(cut1) == ' ') {
-			cut1--;
-		}
-		while(cut2 < line.length() && line.charAt(cut2) == ' ') {
-			cut2++;
-		}
-		setField(line.substring(0, cut1+1));
-		setValue(line.substring(cut2));
+		setLine(line);
 	}
 	public ConfigModel(String field, String value) {
 		clear();
@@ -91,6 +104,8 @@ public class ConfigModel {
 		setField(field);
 		setItems(items);
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void clear() {
 		field = "";
@@ -240,4 +255,6 @@ public class ConfigModel {
 		ok = true;
 		return items;
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

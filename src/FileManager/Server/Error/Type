@@ -27,4 +27,16 @@
 25 = Parse Integer Failed
 26 = Query DataBase Failed
 27 = Updata DataBase Failed
-
+28 = Read Configs from DataBase Failed
+29 = Read Files from DataBase Failed
+30 = Files may not Load before Load Folders
+31 = Read Users from DataBase Failed
+32 = Read Invitations from DataBase Failed
+33 = Read Supports from DataBase Failed
+34 = TCP Server Startup Failed
+35 = TCP Server occurs Error when Closing
+36 = TCP Client cannot create an Input/Output Stream
+37 = TCP Client accept/send Error
+38 = TCP Client occurs Error when Closing
+39 = Register Failed
+40 = Register Failed, User existed

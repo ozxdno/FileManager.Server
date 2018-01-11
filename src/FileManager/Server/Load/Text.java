@@ -6,9 +6,14 @@ import FileManager.Server.Global.*;
 import FileManager.Server.Model.*;
 
 public class Text {
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	private Configs content;
 	private String url;
 	private File file;
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public String getUrl() {
 		return url;
@@ -19,6 +24,9 @@ public class Text {
 	public ConfigModel getNext() {
 		return content.getNext();
 	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public boolean setUrl(String url) {
 		String prevUrl = this.url;
 		File prevFile = this.file;
@@ -38,6 +46,8 @@ public class Text {
 		}
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public Text() {
 		clear();
 	}
@@ -45,6 +55,8 @@ public class Text {
 		clear();
 		setUrl(url);
 	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void clear() {
 		if(content == null) {
@@ -65,9 +77,14 @@ public class Text {
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(file));
 			String line = br.readLine();
-			while(line != null && line.length() != 0) {
+			while(line != null) {
+				if(line.length() == 0) {
+					line = br.readLine();
+					continue;
+				}
 				ConfigModel config = new ConfigModel(line);
 				content.addConfig(config);
+				line = br.readLine();
 			}
 			try {
 				br.close();
@@ -86,4 +103,6 @@ public class Text {
 	public int size() {
 		return content.size();
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

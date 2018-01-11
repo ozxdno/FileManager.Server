@@ -14,8 +14,19 @@ public class FolderModel extends BaseFileModel {
 	public Folders getFolders() {
 		return folders;
 	}
+	public FolderModel getFolder(long index) {
+		return folders.getFolder(index);
+	}
 	public Files getFiles() {
 		return files;
+	}
+	public BaseFileModel getFile(int index) {
+		return files.getFile(index);
+	}
+	
+	public boolean setIsRoot(boolean isRoot) {
+		this.isRoot = isRoot;
+		return true;
 	}
 	
 	public FolderModel() {
@@ -33,10 +44,21 @@ public class FolderModel extends BaseFileModel {
 		folders.clear();
 		files.clear();
 	}
-	public void changeRootPath() {
-		
+	public int sizeOfFolders() {
+		return folders.size();
 	}
-	
+	public int sizeOfFiles() {
+		return files.size();
+	}
+	public int size() {
+		return sizeOfFolders() + sizeOfFiles();
+	}
+	public boolean addFolder(FolderModel folder) {
+		return folders.addFolder(folder);
+	}
+	public boolean addFile(BaseFileModel file) {
+		return files.addFile(file);
+	}
 	protected void init(File folder) {
 		
 	}

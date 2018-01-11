@@ -37,6 +37,9 @@ public class SQL {
 	public SQL() {
 		clear();
 	}
+	protected void finalize() {
+		disconnect();
+	}
 	
 	public void clear() {
 		loginName = "root";
@@ -53,17 +56,20 @@ public class SQL {
 	}
 	public void reconnect() {
 		String url = "jdbc:mysql://" + ipv4 + ":" + String.valueOf(port) + "/" + db_name;
+		connected = true;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection(url, loginName, password);
 		}catch(Exception e) {
 			Global.CurrentError.show(16);
+			connected = false;
 			return;
 		}
 		try {
 			query = connection.createStatement();
 		}catch(Exception e) {
 			Global.CurrentError.show(17);
+			connected = false;
 			return;
 		}
 	}
@@ -79,6 +85,7 @@ public class SQL {
 		if(connection != null) {
 			try {
 				connection.close();
+				connected = false;
 			}catch(Exception e) {
 				Global.CurrentError.show(19);
 			}

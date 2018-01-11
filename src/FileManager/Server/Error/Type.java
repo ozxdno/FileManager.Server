@@ -5,8 +5,13 @@ import FileManager.Server.Model.*;
 import FileManager.Server.Global.*;
 
 public class Type {
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	private Map<Integer,String> types;
 	private String url;
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public Map<Integer,String> getTypes() {
 		return types;
@@ -18,17 +23,34 @@ public class Type {
 		return url;
 	}
 	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public boolean setUrl(String url) {
+		if(url == null || url.length() == 0) {
+			return false;
+		}
+		this.url = url;
+		return true;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public Type() {
 		clear();
-		load();
 	}
+	public Type(String url) {
+		clear();
+		setUrl(url);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void clear() {
 		if(types == null) {
 			types = new HashMap<Integer,String>();
 		}
 		types.clear();
-		url = System.getProperty("user.dir") + "\\src\\FileManager\\Server\\Error\\type";
+		url = Global.Path.getProjectPath() + "\\src\\FileManager\\Server\\Error\\Type";
 	}
 	public boolean exists(int code) {
 		return getType(code) != null;
@@ -38,6 +60,7 @@ public class Type {
 		if(!type.exists()) {
 			return false;
 		}
+		type.load();
 		while(!type.isEmpty()) {
 			ConfigModel c = type.getNext();
 			try {
@@ -48,4 +71,6 @@ public class Type {
 		}
 		return true;
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
