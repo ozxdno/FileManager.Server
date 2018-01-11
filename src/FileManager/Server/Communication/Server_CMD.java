@@ -123,7 +123,7 @@ public class Server_CMD {
 			return login();
 		}
 		if(command.getField().equals("close")) {
-			return login();
+			return close();
 		}
 		
 		return "wrong command = 1";
